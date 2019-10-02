@@ -34,9 +34,9 @@ const scaleM = d3
   .range([1, 3]);
 
 // Color scheme
-// const color = d3.scaleSequential(d3.interpolateMagma).domain([-1, 1]);
-// const color = d3.scaleSequential(d3.interpolatePlasma).domain([-1, 1]);
-// const color = d3.scaleSequential(d3.interpolateWarm).domain([-1, 1]);
+// const Color = d3.scaleSequential(d3.interpolateMagma).domain([-1, 1]);
+// const Color = d3.scaleSequential(d3.interpolatePlasma).domain([-1, 1]);
+// const Color = d3.scaleSequential(d3.interpolateWarm).domain([-1, 1]);
 const mColor = d3.scaleSequential(d3.interpolateViridis).domain([-1, 1]);
 const eColor = d3.scaleSequential(d3.interpolateInferno).domain([-1, 1]);
 
@@ -44,8 +44,6 @@ const eColor = d3.scaleSequential(d3.interpolateInferno).domain([-1, 1]);
 //     .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
 //     .y(function(d) { return yScale(Photon.gaussian(i)); }) // set the y values for the line generator
 //     .curve(d3.curveMonotoneX) // apply smoothing to the line
-
-console.log(zs);
 
 // Render function
 const render = (photon: Photon, xOffset: number, yOffset: number, name: string = '') => {
@@ -68,7 +66,7 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
     .attr('cy', z => yScale(Photon.gaussian(z)))
     .attr('r', '3')
     .attr('fill', 'hsla(170, 20%, 30%, 0.3)');
-
+    
   g.selectAll('gaussian')
     .data(zs)
     .enter()
@@ -100,14 +98,6 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
     .attr('cy', z => yScale(photon.gaussianEx(z)))
     .attr('r', z => scaleE(photon.gaussianEy(z)))
     .attr('fill', z => eColor(photon.gaussianEy(z)));
-
-  // g
-  //   .append('text')
-  //   .attr('dx', size / 2)
-  //   .attr('dy', size)
-  //   .attr('stroke', 'white')
-  //   .attr('fill', 'white')
-  //   .text('Horizontal');
 };
 
 const vertical = Photon.vertical();
