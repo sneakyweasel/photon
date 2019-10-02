@@ -1,7 +1,5 @@
-// import Complex from "./Complex";
-// import Complex from "./Complex";
 import * as _ from 'lodash';
-import { complex, cos, sin, sqrt } from 'mathjs';
+import { complex, cos, pi, sin, sqrt } from 'mathjs';
 
 interface Point {
   readonly x: number;
@@ -10,6 +8,7 @@ interface Point {
 }
 
 export default class Photon {
+
   public static horizontal(): Photon {
     return new Photon(complex(1, 0), complex(0, 0));
   }
@@ -29,12 +28,9 @@ export default class Photon {
     return new Photon(complex(1 / sqrt(2), 0), complex(0, -1 / sqrt(2)));
   }
 
-  public static toPath(points: readonly Point[], center: Point): string {
-    let svgPath: string = `M ${center.x},${center.y} `;
-    points.forEach(point => {
-      svgPath += `L ${center.x + point.x},${center.y + point.y} `;
-    });
-    return svgPath;
+  // Gaussian scaling
+  public static gaussian(z: number, sigma = 0.3): number {
+    return Math.exp((-z * z) / (2 * sigma * sigma));
   }
 
   public readonly a: math.Complex;
@@ -51,6 +47,13 @@ export default class Photon {
     const Ey: number = this.b.re * cos(k * z) + this.b.im * sin(k * z);
     return { x: Ex, y: Ey, t: z };
   }
+  
+  // Compute points of the magnetic field from its complex numbers
+  public magnetic(z = 1, k = 1): Point {
+    const Mx: number = this.a.re * cos(k * z + pi / 4) + this.a.im * sin(k * z + pi / 4);
+    const My: number = this.b.re * cos(k * z + pi / 4) + this.b.im * sin(k * z + pi / 4);
+    return { x: Mx, y: My, t: z };
+  }
 
   // Electric field in the X field
   public Ex(z: number, k = 20): number {
@@ -60,26 +63,30 @@ export default class Photon {
   public Ey(z: number, k = 20): number {
     return this.b.re * Math.cos(k * z) + this.b.im * Math.sin(k * z);
   }
+  // Magnetic field in the X field
+  public Mx(z: number, k = 20): number {
+    return this.a.re * Math.cos(k * z) + this.a.im * Math.sin(k * z);
+  }
+  // Magnetic field in the Y field
+  public My(z: number, k = 20): number {
+    return this.b.re * Math.cos(k * z) + this.b.im * Math.sin(k * z);
+  }
 
   // Gaussian scaling
   public gaussianEx(z: number, sigma = 0.3): number {
     return this.Ex(z) * Math.exp((-z * z) / (2 * sigma * sigma));
-  };
-  // Gaussian scaling
+  }
   public gaussianEy(z: number, sigma = 0.3): number {
     return this.Ey(z) * Math.exp((-z * z) / (2 * sigma * sigma));
-  };
-
-  // Compute path for range
-  public electric_points(steps = 0.1): readonly Point[] {
-    // tslint:disable-next-line: readonly-array
-    const points: Point[] = [];
-    _.range(-1, 1, steps).map(step => {
-      points.push(this.electric(step));
-    });
-    return points;
+  }
+  public gaussianMx(z: number, sigma = 0.3): number {
+    return this.Mx(z) * Math.exp((-z * z) / (2 * sigma * sigma));
+  }
+  public gaussianMy(z: number, sigma = 0.3): number {
+    return this.My(z) * Math.exp((-z * z) / (2 * sigma * sigma));
   }
 
+  // Display photon properties
   public display(): void {
     // tslint:disable-next-line: no-console
     console.log(`A: ${this.a.format(3)} - radius: ${this.a.toPolar().r}, phi: ${this.a.toPolar().phi}`);
