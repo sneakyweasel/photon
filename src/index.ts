@@ -5,7 +5,7 @@ import Photon from './Photon';
 const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 const width = window.innerWidth - margin.left - margin.right;
 const height = window.innerHeight - margin.top - margin.bottom;
-const size = {x: 400, y: 400};
+const size = { x: 400, y: 300 };
 // const width = 300;
 // const height = 300;
 const svg = d3
@@ -27,11 +27,11 @@ const yScale = d3
 const scaleE = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([1, 3]);
+  .range([3, 5]);
 const scaleM = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([0, 2]);
+  .range([1, 3]);
 
 // Color scheme
 // const Color = d3.scaleSequential(d3.interpolateMagma).domain([-1, 1]);
@@ -72,7 +72,7 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
     .attr('r', '3')
     .attr('fill', 'hsla(170, 20%, 30%, 0.3)');
 
-  // Magnetic
+    // Magnetic
   g.selectAll('magnetic')
     .data(zs)
     .enter()
