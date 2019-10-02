@@ -5,7 +5,7 @@ import Photon from './Photon';
 const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 const width = window.innerWidth - margin.left - margin.right;
 const height = window.innerHeight - margin.top - margin.bottom;
-const size = 300;
+const size = {x: 400, y: 400};
 // const width = 300;
 // const height = 300;
 const svg = d3
@@ -14,24 +14,24 @@ const svg = d3
   .attr('height', height + margin.top + margin.bottom);
 
 // Generate steps related to pixel width
-// const zs = d3.range(-1, 1, 1 / width);
-const zs = d3.range(-1, 1, 0.01);
+// const zs = d3.range(-1, 1, 0.01);
+const zs = d3.range(-1, 1, 1 / (size.x * 2));
 const xScale = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([0, size]);
+  .range([0, size.x]);
 const yScale = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([0, size]);
+  .range([0, size.y]);
 const scaleE = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([2, 7]);
+  .range([1, 3]);
 const scaleM = d3
   .scaleLinear()
   .domain([-1, 1])
-  .range([1, 3]);
+  .range([0, 2]);
 
 // Color scheme
 // const Color = d3.scaleSequential(d3.interpolateMagma).domain([-1, 1]);
@@ -40,11 +40,6 @@ const scaleM = d3
 const mColor = d3.scaleSequential(d3.interpolateViridis).domain([-1, 1]);
 const eColor = d3.scaleSequential(d3.interpolateInferno).domain([-1, 1]);
 
-// const line = d3.line()
-//     .x(function(d, i) { return xScale(i); }) // set the x values for the line generator
-//     .y(function(d) { return yScale(Photon.gaussian(i)); }) // set the y values for the line generator
-//     .curve(d3.curveMonotoneX) // apply smoothing to the line
-
 // Render function
 const render = (photon: Photon, xOffset: number, yOffset: number, name: string = '') => {
   const g = svg.append('g').attr('transform', `translate(${xOffset}, ${yOffset})`);
@@ -52,8 +47,8 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
   // Text
   g.append('text')
     .attr('class', 'text')
-    .attr('x', size / 2)
-    .attr('y', size + 35)
+    .attr('x', size.x / 2)
+    .attr('y', size.y + 35)
     .text(name);
 
   // Gaussian path
@@ -66,7 +61,7 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
     .attr('cy', z => yScale(Photon.gaussian(z)))
     .attr('r', '3')
     .attr('fill', 'hsla(170, 20%, 30%, 0.3)');
-    
+
   g.selectAll('gaussian')
     .data(zs)
     .enter()
@@ -107,9 +102,13 @@ const antidiagonal = Photon.antidiagonal();
 const circularCW = Photon.circularCW();
 const circularCCW = Photon.circularCCW();
 
-render(horizontal, 0, 0, 'Horizontal');
-render(vertical, 0, 400, 'Vertical');
-render(diagonal, 400, 0, 'Diagonal');
-render(antidiagonal, 400, 400, 'Antidiagonal');
-render(circularCW, 800, 0, 'Circular CW');
-render(circularCCW, 800, 400, 'Circular CCW');
+const xOffset = 50;
+const yOffset = 75;
+render(horizontal, xOffset, 20, 'Horizontal');
+render(vertical, xOffset, size.y + yOffset, 'Vertical');
+
+render(diagonal, size.x + xOffset * 2, 20, 'Diagonal');
+render(antidiagonal, size.x + xOffset * 2, size.y + yOffset, 'Antidiagonal');
+
+render(circularCW, size.x * 2 + xOffset * 3, 20, 'Circular CW');
+render(circularCCW, size.x * 2 + xOffset * 3, size.y + yOffset, 'Circular CCW');
