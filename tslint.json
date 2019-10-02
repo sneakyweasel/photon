@@ -11,6 +11,7 @@
     "no-var-keyword": true,
     "no-parameter-reassignment": true,
     "typedef": [true, "call-signature"],
+    "no-console": false,
 
     // Immutability rules
     "readonly-keyword": true,
@@ -21,11 +22,11 @@
     "no-method-signature": true,
 
     // Functional style rules
-    "no-this": true,
-    "no-class": true,
+    "no-this": false,
+    "no-class": false,
     "no-mixed-interface": true,
     "no-expression-statement": [
-      true,
+      false,
       { "ignore-prefix": ["console.", "process.exit"] }
     ],
     "no-if-statement": true
