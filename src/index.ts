@@ -5,9 +5,7 @@ import Photon from './Photon';
 const margin = { top: 50, right: 50, bottom: 50, left: 50 };
 const width = window.innerWidth - margin.left - margin.right;
 const height = window.innerHeight - margin.top - margin.bottom;
-const size = { x: 400, y: 300 };
-// const width = 300;
-// const height = 300;
+const size = { x: 300, y: 100 };
 const svg = d3
   .select('#wavepacket')
   .attr('width', width + margin.left + margin.right)
@@ -41,8 +39,8 @@ const mColor = d3.scaleSequential(d3.interpolateViridis).domain([-1, 1]);
 const eColor = d3.scaleSequential(d3.interpolateInferno).domain([-1, 1]);
 
 // Render function
-const render = (photon: Photon, xOffset: number, yOffset: number, name: string = '') => {
-  const g = svg.append('g').attr('transform', `translate(${xOffset}, ${yOffset})`);
+const render = (photon: Photon, offset: {readonly x: number, readonly y: number}, name: string = '') => {
+  const g = svg.append('g').attr('transform', `translate(${offset.x}, ${offset.y})`);
 
   // Text
   g.append('text')
@@ -72,7 +70,7 @@ const render = (photon: Photon, xOffset: number, yOffset: number, name: string =
     .attr('r', '3')
     .attr('fill', 'hsla(170, 20%, 30%, 0.3)');
 
-    // Magnetic
+  // Magnetic
   g.selectAll('magnetic')
     .data(zs)
     .enter()
@@ -102,13 +100,11 @@ const antidiagonal = Photon.antidiagonal();
 const circularCW = Photon.circularCW();
 const circularCCW = Photon.circularCCW();
 
-const xOffset = 50;
-const yOffset = 75;
-render(horizontal, xOffset, 20, 'Horizontal');
-render(vertical, xOffset, size.y + yOffset, 'Vertical');
-
-render(diagonal, size.x + xOffset * 2, 20, 'Diagonal');
-render(antidiagonal, size.x + xOffset * 2, size.y + yOffset, 'Antidiagonal');
-
-render(circularCW, size.x * 2 + xOffset * 3, 20, 'Circular CW');
-render(circularCCW, size.x * 2 + xOffset * 3, size.y + yOffset, 'Circular CCW');
+const xOff = 50;
+const yOff = 75;
+render(horizontal, {x: xOff, y: 20}, 'Horizontal');
+render(vertical, {x: xOff, y: size.y + yOff}, 'Vertical');
+render(diagonal, {x: size.x + xOff * 2, y: 20}, 'Diagonal');
+render(antidiagonal, {x: size.x + xOff * 2, y: size.y + yOff}, 'Antidiagonal');
+render(circularCW, {x: size.x * 2 + xOff * 3, y: 20}, 'Circular CW');
+render(circularCCW, {x: size.x * 2 + xOff * 3, y: size.y + yOff}, 'Circular CCW');
